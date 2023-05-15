@@ -3,7 +3,7 @@ interface Tree {
   label: string
   children?: Tree[]
 }
-import { reactive, ref } from 'vue'
+import { reactive } from 'vue'
 
 const treeDate = reactive([
   {

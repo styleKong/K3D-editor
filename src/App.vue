@@ -4,14 +4,48 @@ import kHeader from './components/k-header.vue'
 import kAsideScene from './components/k-aside-scene.vue'
 import kAsideProject from './components/k-aside-project.vue'
 import Editor from './editor'
+/**
+ * 侧边栏菜单显示
+ */
+const asideShow = ref(false)
 const canvas3d = ref()
 let editor: Record<any, any>
 onMounted(() => {
   editor = reactive(
     new Editor({
-      domElement: canvas3d.value
+      domElement: canvas3d.value,
+      render: {
+        antialias: true
+      },
+      scene: {
+        background: 0xbfe3dd
+      },
+      light: {
+        directionalLight: {
+          color: '#fffffff'
+        }
+      },
+      camera: {
+        perspectiveCamera: {
+          position: [5, 2, 8],
+          target: [0, 1, 0],
+          fov: 40,
+          near: 1,
+          far: 500
+        }
+      },
+      stats: true,
+      models: ['./models/gltf/LittlestTokyo.glb'],
+      controls: {
+        orbitControls: {
+          target: [0, 0.5, 0],
+          enablePan: false,
+          enableDamping: true
+        }
+      }
     })
   )
+  console.log(editor)
 })
 provide('creatFile', () => {
   editor.render.domElement.remove()
@@ -23,16 +57,22 @@ provide('creatFile', () => {
 })
 provide('importMode', () => {})
 provide('exportOption', () => {})
-provide('creatLight', (ev: string) => {})
-provide('creatCamera', (ev: string) => {})
-provide('creatControls', (ev: string) => {})
+provide('creatLight', (ev: string) => {
+  console.log(ev)
+})
+provide('creatCamera', (ev: string) => {
+  console.log(ev)
+})
+provide('creatControls', (ev: string) => {
+  console.log(ev)
+})
 </script>
 
 <template>
   <div class="container">
-    <k-header></k-header>
+    <k-header :show="asideShow" @update="asideShow = $event"></k-header>
     <main class="main" ref="canvas3d"></main>
-    <aside class="aside">
+    <aside :class="{ aside: true, show: asideShow }">
       <el-tabs class="tabs" type="border-card">
         <el-tab-pane class="tabs-label" label="场景">
           <k-aside-scene></k-aside-scene>
@@ -42,6 +82,9 @@ provide('creatControls', (ev: string) => {})
         </el-tab-pane>
         <el-tab-pane class="tabs-label" label="设置"> </el-tab-pane>
       </el-tabs>
+      <el-icon class="icon" :size="24" color="#999999" @click="asideShow = !asideShow">
+        <i-ep-d-arrow-right />
+      </el-icon>
     </aside>
   </div>
 </template>
@@ -61,21 +104,20 @@ provide('creatControls', (ev: string) => {})
     right: 5px;
     position: fixed;
     transform: translateX(calc(100% + 5px));
-    transition: transform 0.3s;
+    transition: transform 0.5s;
     z-index: 99;
-    &::before {
-      content: '';
-      display: block;
-      width: 120%;
-      height: 100%;
+    .icon {
       position: absolute;
-      top: 0;
-      right: 0;
-      z-index: -1;
-      user-select: none;
+      top: 50%;
+      transform: translateY(-50%) rotate(180deg);
+      right: 100%;
+      transition: transform 0.3s;
     }
-    &:hover {
+    &.show {
       transform: translateX(0);
+      .icon {
+        transform: translateY(-50%);
+      }
     }
     :deep(.el-tabs__content) {
       padding: 10px;

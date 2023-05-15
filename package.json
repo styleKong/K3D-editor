@@ -12,13 +12,16 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
+    "@element-plus/icons-vue": "^2.1.0",
     "@types/three": "^0.152.0",
     "element-plus": "^2.3.4",
     "pinia": "^2.0.35",
     "three": "^0.152.2",
+    "unplugin-icons": "^0.16.1",
     "vue": "^3.2.47"
   },
   "devDependencies": {
+    "@iconify-json/ep": "^1.1.10",
     "@rushstack/eslint-patch": "^1.2.0",
     "@tsconfig/node18": "^2.0.0",
     "@types/node": "^18.16.3",

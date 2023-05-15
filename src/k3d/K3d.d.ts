@@ -192,4 +192,5 @@ export type K3d = {
   light?: light
   controls?: controls
   skyBox?: string | string[]
+  stats: boolean
 }

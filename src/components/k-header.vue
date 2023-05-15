@@ -1,5 +1,12 @@
 <script lang="ts" setup>
+// import { DArrowRight } from '@element-plus/icons-vue'
 import { inject, reactive, ref } from 'vue'
+/**
+ * 控制显示
+ */
+const props = defineProps({
+  show: Boolean
+})
 
 const menuList = reactive([
   {
@@ -157,7 +164,7 @@ const file = (type: string, command: string) => {
 }
 </script>
 <template>
-  <header class="header">
+  <header :class="{ header: true, show: show }">
     <div>
       <el-dropdown
         v-for="menu in menuList"
@@ -189,6 +196,9 @@ const file = (type: string, command: string) => {
       </el-dropdown>
     </div>
     <el-checkbox v-model="autoSave" label="自动保存" size="large" />
+    <el-icon class="icon" :size="24" color="#999999" @click="$emit('update', !props.show)">
+      <i-ep-d-arrow-right />
+    </el-icon>
   </header>
 </template>
 <style lang="scss" scoped>
@@ -208,19 +218,19 @@ const file = (type: string, command: string) => {
   transform: translateY(-100%);
   transition: transform 0.3s;
   z-index: 99;
-  &::before {
-    content: '';
-    display: block;
-    width: 100%;
-    height: 150%;
+  .icon {
     position: absolute;
-    top: 0;
-    left: 0;
-    z-index: -1;
-    user-select: none;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%) rotate(90deg);
+    transition: transform 0.3s;
+    box-sizing: content-box;
   }
-  &:hover {
+  &.show {
     transform: translateY(0);
+    .icon {
+      transform: translateX(-50%) rotate(-90deg);
+    }
   }
 }
 .menu-item {
