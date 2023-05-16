@@ -193,4 +193,5 @@ export type K3d = {
   controls?: controls
   skyBox?: string | string[]
   stats: boolean
+  models: string | string[]
 }

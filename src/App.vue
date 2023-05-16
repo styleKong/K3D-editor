@@ -1,9 +1,14 @@
 <script setup lang="ts">
 import { onMounted, ref, reactive, provide } from 'vue'
+import * as THREE from 'three'
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import kHeader from './components/k-header.vue'
 import kAsideScene from './components/k-aside-scene.vue'
 import kAsideProject from './components/k-aside-project.vue'
 import Editor from './editor'
+
+import { selectFile } from './editor/utils'
+import { glbLoader } from './k3d/module/loader'
 /**
  * 侧边栏菜单显示
  */
@@ -35,7 +40,7 @@ onMounted(() => {
         }
       },
       stats: true,
-      models: ['./models/gltf/LittlestTokyo.glb'],
+      // models: ['./models/gltf/LittlestTokyo.glb'],
       controls: {
         orbitControls: {
           target: [0, 0.5, 0],
@@ -55,7 +60,20 @@ provide('creatFile', () => {
     })
   )
 })
-provide('importMode', () => {})
+provide(
+  'importMode',
+  selectFile((event: Event) => {
+    const file = event.target && (event.target as any).files[0]
+    let reader = new FileReader()
+    //将上传的文件读取成text
+    reader.onload = function (ev) {
+      glbLoader(ev.target.result, (gltf) => {
+        console.log('gltf', gltf)
+      })
+    }
+    reader.readAsArrayBuffer(file)
+  })
+)
 provide('exportOption', () => {})
 provide('creatLight', (ev: string) => {
   console.log(ev)

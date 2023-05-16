@@ -85,7 +85,7 @@ export default class extends Events {
     if (config.controls) this.initControls(config.controls)
     // if (_.hasOwnProperty.call(config, 'skyBox')) this.initSkyBox(config.skyBox);
     // if (config.shadow) this.initShadow(config.shadow);
-    // if (_.hasOwnProperty.call(config, 'models')) this.loadMode(config.models);
+    if (_.hasOwnProperty.call(config, 'models')) this.loadMode(config.models)
     this.initComposer()
     if (config.stats) this.stats = new Stats()
     this.bindEvent()
