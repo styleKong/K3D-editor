@@ -8,7 +8,6 @@ import kAsideProject from './components/k-aside-project.vue'
 import Editor from './editor'
 
 import { selectFile } from './editor/utils'
-import { glbLoader } from './k3d/module/loader'
 /**
  * 侧边栏菜单显示
  */

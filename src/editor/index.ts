@@ -3,8 +3,6 @@ import * as THREE from 'three'
 export default class extends K3D {
   constructor(config: any) {
     super(config)
-    console.log(this.scene)
-
     this.initGeo()
   }
   initGeo() {

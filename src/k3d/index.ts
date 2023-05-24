@@ -26,7 +26,8 @@ import { OutlinePass } from 'three/examples/jsm/postprocessing/OutlinePass.js'
 import * as cameras from './module/Camera'
 import * as lights from './module/Light'
 import * as controls from './module/Controls'
-import { textureLoader, glbLoader, throttle } from './module/loader'
+import modelLoader from './module/modelLoader'
+import textureLoader from './module/textureLoader'
 import * as _ from './module/utils'
 type K3Dobject = { [a: string]: any }
 interface K3Dlight {
@@ -66,7 +67,7 @@ export default class extends Events {
   controls: K3Dcontrols | undefined
   pmremGenerator: THREE.PMREMGenerator | undefined
   mixers: THREE.AnimationMixer[] = []
-  mixerActions: { [a: string]: THREE.AnimationClip[] } = {}
+  mixerActions: { [a: string]: THREE.AnimationAction[] } = {}
   effectComposer: EffectComposer | undefined
   outlinePass: OutlinePass | undefined
   clickObjects: THREE.Object3D<THREE.Event>[] = []
@@ -92,7 +93,7 @@ export default class extends Events {
     this.animate()
     window.addEventListener(
       'resize',
-      throttle(() => this.onresize(config.camera as K3Dcamera))
+      _.throttle(() => this.onresize(config.camera as K3Dcamera))
     )
   }
   /**
@@ -271,12 +272,12 @@ export default class extends Events {
     const load = (url: string) => {
       return new Promise((reslove, reject) => {
         try {
-          glbLoader(
+          modelLoader(
             url,
             (
               mode: THREE.Mesh,
-              mixer: THREE.AnimationMixer,
-              mixerActions: THREE.AnimationClip[]
+              mixer: THREE.AnimationMixer | undefined,
+              mixerActions: THREE.AnimationAction[] | undefined
             ) => {
               if (mixer) this.mixers.push(mixer)
               if (mixerActions) this.mixerActions[mode.name] = mixerActions
@@ -372,7 +373,7 @@ export default class extends Events {
     }
     ;(this.render as THREE.WebGLRenderer).domElement.addEventListener(
       'pointermove',
-      throttle((event: any) => {
+      _.throttle((event: any) => {
         if (this.camera?.perspectiveCamera) {
           let mode = this.getSelectObject(event)
           this.emit({
@@ -404,8 +405,6 @@ export default class extends Events {
   onresize(config: { [a: string]: any }) {
     this.width = this.domElement?.clientWidth || window.innerWidth
     this.height = this.domElement?.clientHeight || window.innerHeight
-    console.log(this.width, this.height)
-
     if (!this.camera) return
     if (this.camera.orthographicCamera) {
       const {
